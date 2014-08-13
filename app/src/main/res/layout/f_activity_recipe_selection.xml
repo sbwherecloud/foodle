@@ -1,7 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -9,8 +10,54 @@
     tools:context=".FRecipeSelectionActivity">
 
     <TextView
-        android:text="@string/hello_world"
+        android:text="@string/current_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-</RelativeLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left" />
+
+        <TextView
+            android:text="@string/change_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right" />
+
+    </FrameLayout>
+
+    <TextView
+        android:text="@string/recipe_selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/recipeSelectionRecipes"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+    </ListView>
+
+    <TextView
+        android:text="@string/candidate_recipes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/recipeSelectionCandidateRecipes"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+    </ListView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:text="@string/send_candidates"/>
+
+</LinearLayout>

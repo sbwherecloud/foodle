@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.belanger.simon.foodle.FAppState;
 import com.belanger.simon.foodle.FApplication;
+import com.belanger.simon.foodle.FFlowManager;
 import com.belanger.simon.foodle.R;
 import com.belanger.simon.foodle.annotations.FragmentOutlet;
 import com.belanger.simon.foodle.annotations.Layout;
@@ -27,6 +29,8 @@ public class FActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
 
 		if (((Object) this).getClass().isAnnotationPresent(Layout.class)) {
 			Layout layout = ((Object) this).getClass().getAnnotation(Layout.class);
@@ -59,62 +63,62 @@ public class FActivity extends Activity {
 //	public void onClickOutsideModal(View v) {
 //	}
 //
-//	@Override
-//	public void onBackPressed() {
-//		super.onBackPressed();
-//		CRFlowManager.getInstance().removeParentActivity();
-//		this.overridePendingTransition(R.anim.cr_anim_enter_slideright, R.anim.cr_anim_exit_slideright);
-//	}
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		FFlowManager.getInstance().removeParentActivity();
+		this.overridePendingTransition(R.anim.f_anim_enter_slideright, R.anim.f_anim_exit_slideright);
+	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+//		GoogleAnalytics.getInstance(this).reportActivityStart(this);
 	}
-//
-//	@Override
-//	protected void onResume() {
-//		super.onResume();
-//	}
-//
-//	@Override
-//	protected void onPause() {
-//		super.onPause();
-//
-//		CRAppState.getInstance().save(getApplicationContext());
-//	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		FAppState.getInstance().save(getApplicationContext());
+	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		SharedPreferences settings = getSharedPreferences(FApplication.CR_PREFS, 0);
-		settings.edit().putBoolean(FApplication.CR_PREFS_IS_FIRST_LAUNCH, false).commit();
+		SharedPreferences settings = getSharedPreferences(FApplication.F_PREFS, 0);
+		settings.edit().putBoolean(FApplication.F_PREFS_IS_FIRST_LAUNCH, false).commit();
 	}
-//
-//	@Override
-//	protected void onDestroy() {
-//		super.onDestroy();
-//	}
-//
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
 	public boolean isFirstLaunch() {
-		SharedPreferences settings = getSharedPreferences(FApplication.CR_PREFS, 0);
-		return settings.getBoolean(FApplication.CR_PREFS_IS_FIRST_LAUNCH, true);
+		SharedPreferences settings = getSharedPreferences(FApplication.F_PREFS, 0);
+		return settings.getBoolean(FApplication.F_PREFS_IS_FIRST_LAUNCH, true);
 	}
-//
-//	public boolean hasUpNavigation() {
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//			case android.R.id.home :
-//				CRFlowManager.getInstance().launchParentActivity(this);
-//				overridePendingTransition(R.anim.cr_anim_enter_slideright, R.anim.cr_anim_exit_slideright);
-//				return true;
-//		}
-//		return super.onOptionsItemSelected(item);
-//	}
+
+	public boolean hasUpNavigation() {
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home :
+				FFlowManager.getInstance().launchParentActivity(this);
+				overridePendingTransition(R.anim.f_anim_enter_slideright, R.anim.f_anim_exit_slideright);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 //	protected ViewGroup getActionBarView() {
 //		View v = getWindow().getDecorView();

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+import com.belanger.simon.foodle.models.FRecipe;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -19,7 +20,7 @@ public class FAppStatePersistence {
 
 	private static final String	APP_STATE_VISITOR_ID_KEY					= "visitor_id";
     private static final String	APP_STATE_FAVORITES_RECIPES_IDS_FILENAME	= "foodle.favorites";
-	private static final String	APP_STATE_PROFILE_FILENAME					= "foodle.profile";
+	private static final String	APP_STATE_CUSTOM_RECIPES					= "foodle.custom_recipes";
 
 	// Convenience static constructor
 	public static FAppStatePersistence create() {
@@ -27,7 +28,7 @@ public class FAppStatePersistence {
 	}
 
 	public void save(FAppState appState, Context context) throws Exception {
-		SharedPreferences settings = context.getSharedPreferences(FApplication.CR_PREFS, 0);
+		SharedPreferences settings = context.getSharedPreferences(FApplication.F_PREFS, 0);
 		Editor settingsEditor = settings.edit();
 
 //		settingsEditor.putString(APP_STATE_VISITOR_ID_KEY, appState.getVisitorId().get());
@@ -38,16 +39,15 @@ public class FAppStatePersistence {
             String json = gson.toJson(appState.getFavoriteRecipeIds());
             saveContentToFile(context, json, APP_STATE_FAVORITES_RECIPES_IDS_FILENAME);
         }
-//
-//		if (appState.getUserInfo() != null) {
-//			String json = gson.toJson(appState.getUserInfo());
-//			saveContentToFile(context, json, APP_STATE_PROFILE_FILENAME);
-//		}
+
+        String jsonCustomRecipe = gson.toJson(appState.getCustomRecipes());
+        saveContentToFile(context, jsonCustomRecipe, APP_STATE_CUSTOM_RECIPES);
+
 		settingsEditor.commit();
 	}
 
 	public void load(FAppState appState, Context context) throws Exception {
-		SharedPreferences settings = context.getSharedPreferences(FApplication.CR_PREFS, 0);
+		SharedPreferences settings = context.getSharedPreferences(FApplication.F_PREFS, 0);
 
 //		appState.getVisitorId().set(settings.getString(APP_STATE_VISITOR_ID_KEY, null));
 
@@ -62,11 +62,14 @@ public class FAppStatePersistence {
             }
         }
 
-//		json = loadFileContent(context, APP_STATE_PROFILE_FILENAME);
-//		if (json != null) {
-//			CRUserInfo userInfo = gson.fromJson(json, CRUserInfo.class);
-//			appState.setUserInfo(userInfo);
-//		}
+		json = loadFileContent(context, APP_STATE_CUSTOM_RECIPES);
+		if (json != null) {
+			FRecipe[] recipes = gson.fromJson(json, FRecipe[].class);
+            appState.getCustomRecipes().clear();
+            for (FRecipe recipe : recipes){
+                appState.addToCustomRecipes(recipe);
+            }
+		}
 
 	}
 
@@ -79,7 +82,7 @@ public class FAppStatePersistence {
 
 		if (!file.exists()) {
 			if (!file.createNewFile()) {
-				Log.d("Error", "Unable to create file at [" + file.getAbsolutePath() + "]");
+				Log.e("Error", "Unable to create file at [" + file.getAbsolutePath() + "]");
 				return;
 			}
 		}
@@ -93,7 +96,7 @@ public class FAppStatePersistence {
 		File file = new File(context.getFilesDir(), filename);
 
 		if (!file.exists()) {
-			Log.d("Error", "App state file does not exist at [" + file.getAbsolutePath() + "]");
+			Log.e("Error", "App state file does not exist at [" + file.getAbsolutePath() + "]");
 			return null;
 		}
 
@@ -105,7 +108,7 @@ public class FAppStatePersistence {
 			content.append(buffer, 0, charsRead);
 			charsRead = fr.read(buffer);
 		}
-		Log.d("Error", "Error reading [" + file.getAbsolutePath() + "]");
+		Log.e("Error", "Error reading [" + file.getAbsolutePath() + "]");
 		fr.close();
 		return content.toString();
 	}

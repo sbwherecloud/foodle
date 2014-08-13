@@ -2,11 +2,22 @@
 <resources>
 
     <string name="app_name">Foodle</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 
     <!-- Google Analytics -->
 
     <string name="ui_action">ui_action</string>
+
+    <!-- Add Recipe -->
+
+    <string name="action_add_recipe">Add Recipe</string>
+    <string name="addrecipe_name">Recipe\'s name</string>
+
+    <!-- Recipe Selection -->
+
+    <string name="recipe_selection">Add Candidate Recipes</string>
+    <string name="candidate_recipes">Candidate Recipes</string>
+    <string name="send_candidates">Send Candidates</string>
+    <string name="current_group">Current Group</string>
+    <string name="change_group">Change Group</string>
 
 </resources>

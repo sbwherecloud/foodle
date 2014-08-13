@@ -11,8 +11,8 @@ import com.google.android.gms.analytics.Tracker;
 
 public class FApplication extends Application {
 
-	public static final String	CR_PREFS					= "crprefs";
-	public static final String	CR_PREFS_IS_FIRST_LAUNCH	= "is_first_launch";
+	public static final String	F_PREFS					= "fprefs";
+	public static final String	F_PREFS_IS_FIRST_LAUNCH	= "is_first_launch";
 	private Tracker mTracker;
 
 	private static FApplication instance;
@@ -31,7 +31,7 @@ public class FApplication extends Application {
 
 		FFormat.init(this.getApplicationContext());
 
-		mTracker = GoogleAnalytics.getInstance(this).newTracker(R.xml.global_tracker);
+//		mTracker = GoogleAnalytics.getInstance(this).newTracker(R.xml.global_tracker);
 
 		instance = this;
 	}

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.belanger.simon.foodle.datastructures.FList;
 import com.belanger.simon.foodle.datastructures.FValue;
+import com.belanger.simon.foodle.models.FRecipe;
 import com.belanger.simon.foodle.models.FSearch;
 import com.belanger.simon.foodle.models.FSearchConstraints;
 import com.belanger.simon.foodle.models.FUserInfo;
@@ -57,6 +58,7 @@ public class FAppState {
 	private final FValue<String>	visitorId			= new FValue<String>();
 	private final FSearch			currentSearch		= new FSearch();
     private FList<String>			favoriteRecipeIds	= new FList<String>();
+    private FList<FRecipe>			customRecipes	    = new FList<FRecipe>();
 	private FUserInfo				userInfo			= new FUserInfo();
 
 	public FSearch getCurrentSearch() {
@@ -74,6 +76,23 @@ public class FAppState {
 	public void setUserInfo(FUserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
+
+    public void addToCustomRecipes(FRecipe recipe) {
+        if (customRecipes.contains(recipe)) {
+            customRecipes.remove(recipe);
+        }
+        customRecipes.add(recipe);
+    }
+
+    public void removeFromCustomRecipes(FRecipe recipe) {
+        if (customRecipes.contains(recipe)) {
+            customRecipes.remove(recipe);
+        }
+    }
+
+    public FList<FRecipe> getCustomRecipes() {
+        return customRecipes;
+    }
 
     public void addToFavoriteRecipeIds(String recipeId) {
         if (favoriteRecipeIds.contains(recipeId)) {
@@ -102,7 +121,7 @@ public class FAppState {
 		try {
 			FAppStatePersistence.create().save(this, context);
 		} catch (Exception e) {
-			Log.d("Error", "Error while saving application state.");
+			Log.e("Error", "Error while saving application state.");
 			e.printStackTrace();
 		}
 	}
@@ -111,7 +130,7 @@ public class FAppState {
 		try {
 			FAppStatePersistence.create().load(this, context);
 		} catch (Exception e) {
-			Log.d("Error", "Error while loading application state.");
+			Log.e("Error", "Error while loading application state.");
 			e.printStackTrace();
 		}
 	}

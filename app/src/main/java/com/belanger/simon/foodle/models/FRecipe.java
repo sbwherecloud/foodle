@@ -11,6 +11,8 @@ public class FRecipe {
 	public String referenceNumber;
     @SerializedName("recipe_name")
     public String recipeName;
+    @SerializedName("recipe_category")
+    public String recipeCategory;
 	@SerializedName("cooking_time")
 	public int cookingTime;
     @SerializedName("cooking_temperature")
@@ -20,13 +22,15 @@ public class FRecipe {
 	@SerializedName("ingredients")
 	public FList<FIngredient> ingredients;
 
-	public boolean					fetchedInfo	= false;
+    public FRecipe(String recipeName){
+        this.recipeName = recipeName;
+    }
 
 	@Override
 	public boolean equals(Object o) {
 		if (o != null && o.getClass().equals(FRecipe.class)) {
 			FRecipe other = (FRecipe) o;
-			return this.referenceNumber.equals(other.referenceNumber);
+			return this.recipeName.equals(other.recipeName);
 		}
 		return false;
 	}
