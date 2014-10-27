@@ -32,8 +32,9 @@ public class FFlowManager {
 		from.overridePendingTransition(R.anim.f_anim_enter_slideleft, R.anim.f_anim_exit_slideleft);
 	}
 
-	public void launchRecipeSelectionActivity(Activity from) {
+	public void launchRecipeSelectionActivity(Activity from, String message) {
 		Intent intent = new Intent(from, FRecipeSelectionActivity.class);
+        paramRecipeSelectionMessage = message;
 		from.startActivity(intent);
 		from.overridePendingTransition(R.anim.f_anim_enter_slideleft, R.anim.f_anim_exit_slideleft);
 	}
@@ -41,6 +42,12 @@ public class FFlowManager {
 	/*
 	 * PARAMS FOR ACTIVITIES
 	 */
+
+    private String paramRecipeSelectionMessage;
+
+    public String getRecipeSelectionMessage(){
+        return paramRecipeSelectionMessage;
+    }
 
 	/*
 	 * Stack consistency

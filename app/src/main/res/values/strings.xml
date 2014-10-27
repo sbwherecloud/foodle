@@ -11,12 +11,14 @@
 
     <string name="action_add_recipe">Add Recipe</string>
     <string name="addrecipe_name">Recipe\'s name</string>
+    <string name="existing_recipes">Recipes</string>
 
     <!-- Recipe Selection -->
 
     <string name="recipe_selection">Add Candidate Recipes</string>
     <string name="candidate_recipes">Candidate Recipes</string>
     <string name="send_candidates">Send Candidates</string>
+    <string name="get_candidates">Get Candidates</string>
     <string name="current_group">Current Group</string>
     <string name="change_group">Change Group</string>
 

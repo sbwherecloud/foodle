@@ -54,14 +54,23 @@ public class FAppState {
 		return instance;
 	}
 
-	private final FValue<String>	visitId				= new FValue<String>();
-	private final FValue<String>	visitorId			= new FValue<String>();
+	private final FValue<Integer>	appVersion			= new FValue<Integer>();
+	private final FValue<String>	gcmRegistrationId	= new FValue<String>();
 	private final FSearch			currentSearch		= new FSearch();
     private FList<String>			favoriteRecipeIds	= new FList<String>();
+    private FList<String>			friendsList     	= new FList<String>();
     private FList<FRecipe>			customRecipes	    = new FList<FRecipe>();
 	private FUserInfo				userInfo			= new FUserInfo();
 
-	public FSearch getCurrentSearch() {
+    public FValue<String> getGcmRegistrationId(){
+        return gcmRegistrationId;
+    }
+
+    public FValue<Integer> getAppVersion(){
+        return appVersion;
+    }
+
+    public FSearch getCurrentSearch() {
 		return currentSearch;
 	}
 
@@ -92,6 +101,23 @@ public class FAppState {
 
     public FList<FRecipe> getCustomRecipes() {
         return customRecipes;
+    }
+
+    public void addToFriendsList(String friendEmail) {
+        if (favoriteRecipeIds.contains(friendEmail)) {
+            favoriteRecipeIds.remove(friendEmail);
+        }
+        favoriteRecipeIds.add(friendEmail);
+    }
+
+    public void removeFromFriendsList(String friendEmail) {
+        if (favoriteRecipeIds.contains(friendEmail)) {
+            favoriteRecipeIds.remove(friendEmail);
+        }
+    }
+
+    public FList<String> getFriendsList() {
+        return friendsList;
     }
 
     public void addToFavoriteRecipeIds(String recipeId) {

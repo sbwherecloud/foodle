@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 import com.belanger.simon.foodle.models.FRecipe;
+import com.belanger.simon.foodle.models.FUserInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -18,9 +19,12 @@ import java.io.InputStreamReader;
 
 public class FAppStatePersistence {
 
-	private static final String	APP_STATE_VISITOR_ID_KEY					= "visitor_id";
+	private static final String	APP_STATE_GCM_REGISTRATION_ID				= "gcm_registration_id";
+    private static final String	APP_STATE_APP_VERSION				        = "gcm_app_version";
     private static final String	APP_STATE_FAVORITES_RECIPES_IDS_FILENAME	= "foodle.favorites";
-	private static final String	APP_STATE_CUSTOM_RECIPES					= "foodle.custom_recipes";
+	private static final String APP_STATE_CUSTOM_RECIPES_FILENAME           = "foodle.custom_recipes";
+    private static final String APP_STATE_FRIENDS_LIST_FILENAME             = "foodle.friends_list";
+    private static final String	APP_STATE_PROFILE_FILENAME					= "foodle.profile";
 
 	// Convenience static constructor
 	public static FAppStatePersistence create() {
@@ -31,17 +35,23 @@ public class FAppStatePersistence {
 		SharedPreferences settings = context.getSharedPreferences(FApplication.F_PREFS, 0);
 		Editor settingsEditor = settings.edit();
 
-//		settingsEditor.putString(APP_STATE_VISITOR_ID_KEY, appState.getVisitorId().get());
+		settingsEditor.putString(APP_STATE_GCM_REGISTRATION_ID, appState.getGcmRegistrationId().get());
+
+        settingsEditor.putInt(APP_STATE_APP_VERSION, appState.getAppVersion().get());
 
 		Gson gson = getGson();
 
-        if (appState.getFavoriteRecipeIds().size() > 0) {
-            String json = gson.toJson(appState.getFavoriteRecipeIds());
-            saveContentToFile(context, json, APP_STATE_FAVORITES_RECIPES_IDS_FILENAME);
-        }
+        String json = gson.toJson(appState.getFavoriteRecipeIds());
+        saveContentToFile(context, json, APP_STATE_FAVORITES_RECIPES_IDS_FILENAME);
 
         String jsonCustomRecipe = gson.toJson(appState.getCustomRecipes());
-        saveContentToFile(context, jsonCustomRecipe, APP_STATE_CUSTOM_RECIPES);
+        saveContentToFile(context, jsonCustomRecipe, APP_STATE_CUSTOM_RECIPES_FILENAME);
+
+        String jsonFriendsList = gson.toJson(appState.getFriendsList());
+        saveContentToFile(context, jsonFriendsList, APP_STATE_FRIENDS_LIST_FILENAME);
+
+        String jsonUserInfo = gson.toJson(appState.getUserInfo());
+        saveContentToFile(context, jsonUserInfo, APP_STATE_PROFILE_FILENAME);
 
 		settingsEditor.commit();
 	}
@@ -49,7 +59,9 @@ public class FAppStatePersistence {
 	public void load(FAppState appState, Context context) throws Exception {
 		SharedPreferences settings = context.getSharedPreferences(FApplication.F_PREFS, 0);
 
-//		appState.getVisitorId().set(settings.getString(APP_STATE_VISITOR_ID_KEY, null));
+		appState.getGcmRegistrationId().set(settings.getString(APP_STATE_GCM_REGISTRATION_ID, null));
+
+        appState.getAppVersion().set(settings.getInt(APP_STATE_APP_VERSION, Integer.MIN_VALUE));
 
 		Gson gson = getGson();
 
@@ -62,7 +74,7 @@ public class FAppStatePersistence {
             }
         }
 
-		json = loadFileContent(context, APP_STATE_CUSTOM_RECIPES);
+		json = loadFileContent(context, APP_STATE_CUSTOM_RECIPES_FILENAME);
 		if (json != null) {
 			FRecipe[] recipes = gson.fromJson(json, FRecipe[].class);
             appState.getCustomRecipes().clear();
@@ -70,6 +82,21 @@ public class FAppStatePersistence {
                 appState.addToCustomRecipes(recipe);
             }
 		}
+
+        json = loadFileContent(context, APP_STATE_FRIENDS_LIST_FILENAME);
+        if (json != null) {
+            String[] friendEmails = gson.fromJson(json, String[].class);
+            appState.getFriendsList().clear();
+            for (String friendEmail : friendEmails){
+                appState.addToFriendsList(friendEmail);
+            }
+        }
+
+        json = loadFileContent(context, APP_STATE_PROFILE_FILENAME);
+        if (json != null) {
+            FUserInfo userInfo = gson.fromJson(json, FUserInfo.class);
+            appState.setUserInfo(userInfo);
+        }
 
 	}
 

@@ -7,8 +7,8 @@ public class FIngredient {
 	public String				ingredientId;
 	@SerializedName("ingredient_name")
 	public String				ingredientName;
-	@SerializedName("quantity")
-	public String				quantity;
+	@SerializedName("voteId")
+	public String				data;
 
     @Override
 	public boolean equals(Object o) {

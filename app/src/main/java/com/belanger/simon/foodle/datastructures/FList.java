@@ -16,8 +16,8 @@ import java.util.ListIterator;
 
 public class FList<T> extends FObservable implements List<T> {
 
-	private transient boolean			silent;
-	private transient ArrayList<T>		list			= new ArrayList<T>();
+	private transient boolean		  silent;
+	private transient ArrayList<T>	  list			= new ArrayList<T>();
 	private transient FValue<Integer> focusingIndex	= new FValue<Integer>(-1);
 
 	/*

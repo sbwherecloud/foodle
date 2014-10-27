@@ -5,14 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class FUserInfo {
 
-	@SerializedName("first_name")
+	@SerializedName("firstName")
 	public String	firstName;
-	@SerializedName("last_name")
+	@SerializedName("lastName")
 	public String	lastName;
 	@SerializedName("email")
 	public String	email;
-	@SerializedName("phone_number")
-	public String	phoneNumber;
 
 	public boolean isValid() {
 		return isFirstNameValid() && isLastNameValid() && isEmailValid();
