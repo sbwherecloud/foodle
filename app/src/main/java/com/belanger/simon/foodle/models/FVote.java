@@ -16,5 +16,7 @@ public class FVote {
     public Long endTimeInMillis;
     @SerializedName("recipeVotes")
     public FList<Integer> recipeVotes;
+    @SerializedName("voteCreatorInformation")
+    public FUserInfo voteCreatorInformation;
 
 }

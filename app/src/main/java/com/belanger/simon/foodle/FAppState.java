@@ -58,7 +58,8 @@ public class FAppState {
 	private final FValue<String>	gcmRegistrationId	= new FValue<String>();
 	private final FSearch			currentSearch		= new FSearch();
     private FList<String>			favoriteRecipeIds	= new FList<String>();
-    private FList<String>			friendsList     	= new FList<String>();
+    private FList<FUserInfo>		friendsList     	= new FList<FUserInfo>();
+    private FList<Long>			    pendingVotesList    = new FList<Long>();
     private FList<FRecipe>			customRecipes	    = new FList<FRecipe>();
 	private FUserInfo				userInfo			= new FUserInfo();
 
@@ -103,20 +104,20 @@ public class FAppState {
         return customRecipes;
     }
 
-    public void addToFriendsList(String friendEmail) {
-        if (favoriteRecipeIds.contains(friendEmail)) {
-            favoriteRecipeIds.remove(friendEmail);
+    public void addToFriendsList(FUserInfo friendInfo) {
+        if (friendsList.contains(friendInfo)) {
+            friendsList.remove(friendInfo);
         }
-        favoriteRecipeIds.add(friendEmail);
+        friendsList.add(friendInfo);
     }
 
-    public void removeFromFriendsList(String friendEmail) {
-        if (favoriteRecipeIds.contains(friendEmail)) {
-            favoriteRecipeIds.remove(friendEmail);
+    public void removeFromFriendsList(FUserInfo friendInfo) {
+        if (friendsList.contains(friendInfo)) {
+            friendsList.remove(friendInfo);
         }
     }
 
-    public FList<String> getFriendsList() {
+    public FList<FUserInfo> getFriendsList() {
         return friendsList;
     }
 
@@ -130,6 +131,23 @@ public class FAppState {
     public void removeFromFavoriteRecipeIds(String recipeId) {
         if (favoriteRecipeIds.contains(recipeId)) {
             favoriteRecipeIds.remove(recipeId);
+        }
+    }
+
+    public FList<Long> getPendingVotesList() {
+        return pendingVotesList;
+    }
+
+    public void addToPendingVotes(Long pendingVoteId) {
+        if (pendingVotesList.contains(pendingVoteId)) {
+            pendingVotesList.remove(pendingVoteId);
+        }
+        pendingVotesList.add(pendingVoteId);
+    }
+
+    public void removeFromPendingVotesList(Long pendingVoteId) {
+        if (pendingVotesList.contains(pendingVoteId)) {
+            pendingVotesList.remove(pendingVoteId);
         }
     }
 

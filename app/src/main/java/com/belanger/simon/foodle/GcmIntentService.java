@@ -14,7 +14,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.belanger.simon.foodle.activities.FRecipeSelectionActivity;
+import com.belanger.simon.foodle.models.FVote;
+import com.belanger.simon.foodle.models.transactions.FContactResponse;
+import com.belanger.simon.foodle.network.FCallback;
+import com.belanger.simon.foodle.network.FWebService;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by SimonPro on 14-10-26.
@@ -74,6 +81,27 @@ public class GcmIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
+                if(extras.containsKey("voteId")){
+                    FAppState.getInstance().getPendingVotesList().add(Long.decode(extras.getString("voteId")));
+                    FAppState.getInstance().getPendingVotesList().notify();
+                }
+                else if(extras.containsKey("friendRequest")){
+                    String askerEmail = extras.getString("askerEmail");
+                    FWebService.getInstance().updateContactList(askerEmail,
+                            FAppState.getInstance().getUserInfo().email,
+                            true,
+                            new FCallback<FContactResponse>(){
+                                @Override
+                                public void success(FContactResponse object, Response response) {
+                                    super.success(object, response);
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    super.failure(error);
+                                }
+                            });
+                }
                 mes = extras.getString("voteId");
                 showToast();
                 Log.i(TAG, "Received: " + extras.toString());

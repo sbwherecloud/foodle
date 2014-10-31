@@ -23,6 +23,7 @@ public class FAppStatePersistence {
     private static final String	APP_STATE_APP_VERSION				        = "gcm_app_version";
     private static final String	APP_STATE_FAVORITES_RECIPES_IDS_FILENAME	= "foodle.favorites";
 	private static final String APP_STATE_CUSTOM_RECIPES_FILENAME           = "foodle.custom_recipes";
+    private static final String APP_STATE_PENDING_VOTES_FILENAME            = "foodle.pending_votes";
     private static final String APP_STATE_FRIENDS_LIST_FILENAME             = "foodle.friends_list";
     private static final String	APP_STATE_PROFILE_FILENAME					= "foodle.profile";
 
@@ -46,6 +47,9 @@ public class FAppStatePersistence {
 
         String jsonCustomRecipe = gson.toJson(appState.getCustomRecipes());
         saveContentToFile(context, jsonCustomRecipe, APP_STATE_CUSTOM_RECIPES_FILENAME);
+
+        String jsonPendingVotes = gson.toJson(appState.getPendingVotesList());
+        saveContentToFile(context, jsonPendingVotes, APP_STATE_PENDING_VOTES_FILENAME);
 
         String jsonFriendsList = gson.toJson(appState.getFriendsList());
         saveContentToFile(context, jsonFriendsList, APP_STATE_FRIENDS_LIST_FILENAME);
@@ -83,12 +87,21 @@ public class FAppStatePersistence {
             }
 		}
 
+        json = loadFileContent(context, APP_STATE_PENDING_VOTES_FILENAME);
+        if (json != null) {
+            Long[] pendingVotes = gson.fromJson(json, Long[].class);
+            appState.getPendingVotesList().clear();
+            for (Long pendingVoteId : pendingVotes){
+                appState.addToPendingVotes(pendingVoteId);
+            }
+        }
+
         json = loadFileContent(context, APP_STATE_FRIENDS_LIST_FILENAME);
         if (json != null) {
-            String[] friendEmails = gson.fromJson(json, String[].class);
+            FUserInfo[] friendsUserInfo = gson.fromJson(json, FUserInfo[].class);
             appState.getFriendsList().clear();
-            for (String friendEmail : friendEmails){
-                appState.addToFriendsList(friendEmail);
+            for (FUserInfo friendUserInfo : friendsUserInfo){
+                appState.addToFriendsList(friendUserInfo);
             }
         }
 

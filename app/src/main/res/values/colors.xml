@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- either #ffffff or #b2ffffff where b2 is the alpha, in hex -->
+    
+    <color name="background_dark">#2a2a2a</color>
+    <color name="background_transparent_dark">#882a2a2a</color>
+    <color name="background_medium">#888888</color>
+    <color name="background_light">#FFFFFF</color>
+    <color name="background_red">#CF0101</color>
+
+    <color name="divider_medium">#161616</color>
+    
+    <color name="subtitle_gray">#EFEFF4</color>
+    
+    <color name="dark_gray">#2A2A2A</color>
+    <color name="light_gray">#E5E5E5</color>
+    <color name="green">#3EBB35</color>
+    
+    <color name="text_dark">#000000</color>
+    <color name="text_light">#FFFFFF</color>
+    <color name="text_subtitle">#555555</color>
+    <color name="text_disabled">#AAAAAA</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#111111</color>
+    <color name="dark_blue">#33B5E5</color>
+
+</resources>

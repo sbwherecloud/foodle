@@ -7,6 +7,23 @@
 
     <string name="ui_action">ui_action</string>
 
+    <!-- User Registration -->
+
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">Email</string>
+    <string name="enter_required_fields">You must fill all the required fields</string>
+    <string name="register">Register</string>
+    <string name="registration_error">Error, please try again</string>
+    <string name="registration_text_subtitle">Register</string>
+    <string name="registration_explicative_text">Register to enjoy all the features Foodle has to
+        offer like it\s voting and contact management mechanisms </string>
+
+    <!-- Pending Votes -->
+
+    <string name="pending_votes">Pending Votes</string>
+    <string name="not_now">Not now</string>
+
     <!-- Add Recipe -->
 
     <string name="action_add_recipe">Add Recipe</string>

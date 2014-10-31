@@ -27,4 +27,15 @@ public class FUserInfo {
 	public boolean isEmailValid() {
 		return FFormat.isValidEmail(email);
 	}
+
+    public boolean equals(Object obj){
+        if(!(obj instanceof FUserInfo))
+            return false;
+
+        return this.email.equals(((FUserInfo) obj).email);
+    }
+
+    public int hashCode(){
+        return this.email.hashCode();
+    }
 }
