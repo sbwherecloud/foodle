@@ -1,6 +1,5 @@
 package com.belanger.simon.foodle;
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,14 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.belanger.simon.foodle.activities.FRecipeSelectionActivity;
-import com.belanger.simon.foodle.models.FVote;
-import com.belanger.simon.foodle.models.transactions.FContactResponse;
-import com.belanger.simon.foodle.network.FCallback;
-import com.belanger.simon.foodle.network.FWebService;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by SimonPro on 14-10-26.
@@ -33,6 +25,8 @@ public class GcmIntentService extends IntentService {
     String mes;
     static final String TAG = "GCMDemo";
     private Handler handler;
+    private static OnVoteIdReceivedListener voteIdListener;
+    private static OnFriendRequestReceivedListener friendRequestListener;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -82,25 +76,16 @@ public class GcmIntentService extends IntentService {
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
                 if(extras.containsKey("voteId")){
-                    FAppState.getInstance().getPendingVotesList().add(Long.decode(extras.getString("voteId")));
-                    FAppState.getInstance().getPendingVotesList().notify();
+                    Long voteId = Long.decode(extras.getString("voteId"));
+                    FAppState.getInstance().getPendingVotesList().add(voteId);
+                    if(voteIdListener != null)
+                        voteIdListener.voteIdReceived(voteId);
                 }
                 else if(extras.containsKey("friendRequest")){
                     String askerEmail = extras.getString("askerEmail");
-                    FWebService.getInstance().updateContactList(askerEmail,
-                            FAppState.getInstance().getUserInfo().email,
-                            true,
-                            new FCallback<FContactResponse>(){
-                                @Override
-                                public void success(FContactResponse object, Response response) {
-                                    super.success(object, response);
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    super.failure(error);
-                                }
-                            });
+                    if(friendRequestListener != null){
+                        friendRequestListener.friendRequestReceived(askerEmail);
+                    }
                 }
                 mes = extras.getString("voteId");
                 showToast();
@@ -139,5 +124,21 @@ public class GcmIntentService extends IntentService {
             }
         });
 
+    }
+
+    public static void setOnVoteIdReceivedListener(OnVoteIdReceivedListener l){
+        voteIdListener = l;
+    }
+
+    public interface OnVoteIdReceivedListener{
+        public void voteIdReceived(Long voteId);
+    }
+
+    public static void setOnFriendRequestReceivedListener(OnFriendRequestReceivedListener l){
+        friendRequestListener = l;
+    }
+
+    public interface OnFriendRequestReceivedListener{
+        public void friendRequestReceived(String askerEmail);
     }
 }

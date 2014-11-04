@@ -27,6 +27,7 @@
     <!-- Add Recipe -->
 
     <string name="action_add_recipe">Add Recipe</string>
+    <string name="action_add_contact">Add Contact</string>
     <string name="addrecipe_name">Recipe\'s name</string>
     <string name="existing_recipes">Recipes</string>
 
@@ -38,5 +39,15 @@
     <string name="get_candidates">Get Candidates</string>
     <string name="current_group">Current Group</string>
     <string name="change_group">Change Group</string>
+    <string name="votes">Votes</string>
+    <string name="create_vote">Create Vote</string>
+    <string name="contact_selection">Contacts</string>
+    <string name="selected_contacts">Selected Contacts</string>
+    <string name="contacts">Contacts</string>
+    <string name="recipes">Recipes</string>
+    <string name="vote_end_time">Vote End Time</string>
+    <string name="adjust_time">Adjust Time</string>
+    <string name="contact_email">Contact email</string>
+    <string name="send_request">Send Request</string>
 
 </resources>

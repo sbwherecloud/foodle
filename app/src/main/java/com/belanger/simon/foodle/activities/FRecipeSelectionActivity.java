@@ -6,13 +6,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.belanger.simon.foodle.FAppState;
 import com.belanger.simon.foodle.FFlowManager;
 import com.belanger.simon.foodle.R;
-import com.belanger.simon.foodle.adapters.FCandidateListViewAdapter;
+import com.belanger.simon.foodle.adapters.FSelectedRecipeListViewAdapter;
 import com.belanger.simon.foodle.adapters.FRecipeListViewAdapter;
 import com.belanger.simon.foodle.annotations.Layout;
 import com.belanger.simon.foodle.annotations.ViewOutlet;
@@ -23,36 +25,43 @@ import com.belanger.simon.foodle.models.FVote;
 import com.belanger.simon.foodle.models.transactions.FVoteRequest;
 import com.belanger.simon.foodle.network.FCallback;
 import com.belanger.simon.foodle.network.FWebService;
-import com.belanger.simon.foodle.views.FUserInfoDialog;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 @Layout(R.layout.f_activity_recipe_selection)
-public class FRecipeSelectionActivity extends FActivity implements FRecipeListViewAdapter.OnAddRecipe {
+public class FRecipeSelectionActivity extends FActivity implements FRecipeListViewAdapter.OnAddRecipe,
+        DatePicker.OnDateChangedListener, TimePicker.OnTimeChangedListener {
 
     @ViewOutlet(R.id.recipeSelectionRecipes) public ListView recipesListView;
     @ViewOutlet(R.id.recipeSelectionCandidateRecipes) public ListView candidateRecipes;
     @ViewOutlet(R.id.recipeSelectionSendCandidatesButton) public Button sendCandidatesButton;
     @ViewOutlet(R.id.recipeSelectionGetCandidatesButton) public Button getCandidatesButton;
     @ViewOutlet(R.id.recipeSelectionCurrentGroup) public TextView currentGroup;
+    @ViewOutlet(R.id.recipeSelectionDatePicker) public DatePicker datePicker;
+    @ViewOutlet(R.id.recipeSelectionTimePicker) public TimePicker timePicker;
+
+    public final static long MILLIS_IN_AN_HOUR = 3600000;
+    public final static long MILLIS_IN_A_MINUTE = 60000;
 
     Context context;
 
     String message = FFlowManager.getInstance().getRecipeSelectionMessage();
 
     private MenuItem addRecipe;
+    private MenuItem votes;
+    private MenuItem contacts;
     private FList<FRecipe> recipes = FAppState.getInstance().getCustomRecipes();
     private FList<FRecipe> candidates = new FList<FRecipe>();
-    private FCandidateListViewAdapter candidatesAdapter;
+    private Long dateInMillis = 0L;
+    private Long timeInMillis = 0L;
+    private Long voteEndTimeInMillis = 0L;
+    private FSelectedRecipeListViewAdapter candidatesAdapter;
     private FRecipeListViewAdapter recipesAdapter;
 
     @Override
@@ -61,23 +70,26 @@ public class FRecipeSelectionActivity extends FActivity implements FRecipeListVi
 
         setTitle(getResources().getString(R.string.recipe_selection));
 
-        FUserInfo userInfo = FAppState.getInstance().getUserInfo();
-
-        //Obligatory registration
-        if(userInfo == null || (!userInfo.isValid())){
-            FUserInfoDialog registrationDialog = new FUserInfoDialog(this);
-            registrationDialog.show();
-        }
-
         currentGroup.setText(message);
 
         context = getApplicationContext();
+
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        datePicker = new DatePicker(context);
+        datePicker.init(year, month, day, this);
+
+        timePicker = new TimePicker(context);
+        timePicker.setOnTimeChangedListener(this);
 
         recipesAdapter = new FRecipeListViewAdapter(this, recipes);
         recipesAdapter.setOnAddRecipeListener(this);
         recipesListView.setAdapter(recipesAdapter);
 
-        candidatesAdapter = new FCandidateListViewAdapter(this, candidates);
+        candidatesAdapter = new FSelectedRecipeListViewAdapter(this, candidates);
         candidateRecipes.setAdapter(candidatesAdapter);
 
         sendCandidatesButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +104,11 @@ public class FRecipeSelectionActivity extends FActivity implements FRecipeListVi
                 FVoteRequest vote = new FVoteRequest();
                 vote.recipes = candidatesName;
                 vote.votersEmail = votersEmail;
+                dateInMillis = datePicker.getCalendarView().getDate();
+                voteEndTimeInMillis = dateInMillis + timeInMillis;
+                timeInMillis = timePicker.getCurrentHour() * MILLIS_IN_AN_HOUR + timePicker.getCurrentMinute() * MILLIS_IN_A_MINUTE;
+                vote.endTimeInMillis = voteEndTimeInMillis;
+                vote.voteCreatorInformation = FAppState.getInstance().getUserInfo();
                 FWebService.getInstance().insertVote(vote, new FCallback<FVote>() {
                     @Override
                     public void success(FVote object, Response response) {
@@ -154,6 +171,22 @@ public class FRecipeSelectionActivity extends FActivity implements FRecipeListVi
                 return true;
             }
         });
+        votes = menu.findItem(R.id.action_votes);
+        votes.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                onVotesMenuClicked();
+                return true;
+            }
+        });
+        contacts = menu.findItem(R.id.action_contacts);
+        contacts.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                onContactsMenuClicked();
+                return true;
+            }
+        });
         return true;
     }
 
@@ -178,11 +211,32 @@ public class FRecipeSelectionActivity extends FActivity implements FRecipeListVi
         FFlowManager.getInstance().launchAddRecipeActivity(this);
     }
 
+    public void onVotesMenuClicked(){
+        FFlowManager.getInstance().launchPendingVotesActivity(this);
+    }
+
+    public void onContactsMenuClicked(){
+        FFlowManager.getInstance().launchContactsActivity(this);
+    }
+
     @Override
     public void addRecipe(FRecipe recipe) {
         if(!candidates.contains(recipe)){
             candidates.add(recipe);
             candidatesAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+        Date chosenDate = new Date(year,monthOfYear,dayOfMonth);
+        dateInMillis = chosenDate.getTime();
+    }
+
+    @Override
+    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+
+        timeInMillis = hourOfDay * MILLIS_IN_AN_HOUR + minute * MILLIS_IN_A_MINUTE;
     }
 }

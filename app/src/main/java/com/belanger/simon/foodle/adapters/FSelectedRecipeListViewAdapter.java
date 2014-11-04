@@ -16,12 +16,12 @@ import com.belanger.simon.foodle.models.FRecipe;
 /**
  * Created by SimonPro on 2014-08-16.
  */
-public class FCandidateListViewAdapter extends BaseAdapter implements ListAdapter {
+public class FSelectedRecipeListViewAdapter extends BaseAdapter implements ListAdapter {
 
     private final FList<FRecipe> candidates;
     private final LayoutInflater inflater;
 
-    public FCandidateListViewAdapter(Context context, FList<FRecipe> candidates) {
+    public FSelectedRecipeListViewAdapter(Context context, FList<FRecipe> candidates) {
         this.candidates = candidates;
         this.inflater = LayoutInflater.from(context);
     }
@@ -33,7 +33,7 @@ public class FCandidateListViewAdapter extends BaseAdapter implements ListAdapte
         Holder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.f_view_recipe_listitem, parent, false);
+            convertView = inflater.inflate(R.layout.f_view_recipe_candidate, parent, false);
             holder = Holder.fromView(convertView);
             convertView.setTag(holder);
 
@@ -49,13 +49,11 @@ public class FCandidateListViewAdapter extends BaseAdapter implements ListAdapte
     private static class Holder {
 
         TextView recipeName;
-        Button addRecipe;
 
         public static Holder fromView(View view) {
             Holder holder = new Holder();
 
-            holder.recipeName = (TextView) view.findViewById(R.id.recipeSelectionRecipeName);
-            holder.addRecipe = (Button) view.findViewById(R.id.recipeSelectionAddRecipe);
+            holder.recipeName = (TextView) view.findViewById(R.id.recipeCandidateRecipeName);
 
             return holder;
         }

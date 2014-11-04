@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import com.belanger.simon.foodle.FAppState;
 import com.belanger.simon.foodle.FFlowManager;
+import com.belanger.simon.foodle.GcmIntentService;
 import com.belanger.simon.foodle.R;
 import com.belanger.simon.foodle.adapters.FPendingVotesListViewAdapter;
 import com.belanger.simon.foodle.annotations.Layout;
@@ -23,7 +24,7 @@ import retrofit.client.Response;
  * Created by SimonPro on 14-10-30.
  */
 @Layout(R.layout.f_activity_pending_votes)
-public class FPendingVotesActivity extends FActivity{
+public class FPendingVotesActivity extends FActivity implements GcmIntentService.OnVoteIdReceivedListener{
 
     @ViewOutlet(R.id.pendingVotesListView) public ListView pendingVotesListView;
     @ViewOutlet(R.id.pendingVotesSkipButton) public Button skipButton;
@@ -38,9 +39,7 @@ public class FPendingVotesActivity extends FActivity{
 
         setTitle(getResources().getString(R.string.pending_votes));
 
-        if(FAppState.getInstance().getPendingVotesList().isEmpty()){
-            FFlowManager.getInstance().launchRecipeSelectionActivity(this, null);
-        }
+        GcmIntentService.setOnVoteIdReceivedListener(this);
 
         for(Long pendingVoteId : FAppState.getInstance().getPendingVotesList()){
             FWebService.getInstance().getVote(pendingVoteId, new FCallback<FVote>(){
@@ -48,6 +47,7 @@ public class FPendingVotesActivity extends FActivity{
                 public void success(FVote object, Response response) {
                     super.success(object, response);
                     pendingVotesList.add(object);
+                    pendingVotesListViewAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -63,7 +63,30 @@ public class FPendingVotesActivity extends FActivity{
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FFlowManager.getInstance().launchRecipeSelectionActivity(FPendingVotesActivity.this, null);
+                FFlowManager.getInstance().launchVoteCreationActivity(FPendingVotesActivity.this);
+            }
+        });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        pendingVotesListViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void voteIdReceived(Long voteId) {
+        FWebService.getInstance().getVote(voteId, new FCallback<FVote>(){
+            @Override
+            public void success(FVote object, Response response) {
+                super.success(object, response);
+                pendingVotesList.add(object);
+                pendingVotesListViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                super.failure(error);
             }
         });
     }

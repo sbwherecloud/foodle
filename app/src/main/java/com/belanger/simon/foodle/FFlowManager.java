@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.belanger.simon.foodle.activities.FAddRecipeActivity;
+import com.belanger.simon.foodle.activities.FContactsActivity;
+import com.belanger.simon.foodle.activities.FPendingVotesActivity;
 import com.belanger.simon.foodle.activities.FRecipeSelectionActivity;
+import com.belanger.simon.foodle.activities.FVoteCreationActivity;
 
 import java.util.Stack;
 
@@ -38,6 +41,26 @@ public class FFlowManager {
 		from.startActivity(intent);
 		from.overridePendingTransition(R.anim.f_anim_enter_slideleft, R.anim.f_anim_exit_slideleft);
 	}
+
+    public void launchVoteCreationActivity(Activity from) {
+        Intent intent = new Intent(from, FVoteCreationActivity.class);
+        from.startActivity(intent);
+        from.overridePendingTransition(R.anim.f_anim_enter_slideleft, R.anim.f_anim_exit_slideleft);
+    }
+
+    public void launchPendingVotesActivity(Activity from) {
+        Intent intent = new Intent(from, FPendingVotesActivity.class);
+        from.startActivity(intent);
+        from.overridePendingTransition(R.anim.f_anim_enter_slideleft, R.anim.f_anim_exit_slideleft);
+    }
+
+    public void launchContactsActivity(Activity from) {
+        Intent intent = new Intent(from, FContactsActivity.class);
+        from.startActivity(intent);
+        from.overridePendingTransition(R.anim.f_anim_enter_slideleft, R.anim.f_anim_exit_slideleft);
+    }
+
+
 
 	/*
 	 * PARAMS FOR ACTIVITIES

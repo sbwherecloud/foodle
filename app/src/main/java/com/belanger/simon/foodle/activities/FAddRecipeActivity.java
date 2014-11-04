@@ -8,7 +8,7 @@ import android.widget.ListView;
 
 import com.belanger.simon.foodle.FAppState;
 import com.belanger.simon.foodle.R;
-import com.belanger.simon.foodle.adapters.FCandidateListViewAdapter;
+import com.belanger.simon.foodle.adapters.FSelectedRecipeListViewAdapter;
 import com.belanger.simon.foodle.annotations.Layout;
 import com.belanger.simon.foodle.annotations.ViewOutlet;
 import com.belanger.simon.foodle.datastructures.FList;
@@ -27,7 +27,7 @@ public class FAddRecipeActivity extends FActivity {
     @ViewOutlet(R.id.addRecipeRecipes)
     ListView recipesListView;
 
-    private FCandidateListViewAdapter existingRecipeAdapter;
+    private FSelectedRecipeListViewAdapter existingRecipeAdapter;
     private FList<FRecipe> existingRecipes = FAppState.getInstance().getCustomRecipes();
 
     @Override
@@ -45,7 +45,7 @@ public class FAddRecipeActivity extends FActivity {
             }
         });
 
-        existingRecipeAdapter = new FCandidateListViewAdapter(this, existingRecipes);
+        existingRecipeAdapter = new FSelectedRecipeListViewAdapter(this, existingRecipes);
         recipesListView.setAdapter(existingRecipeAdapter);
     }
 }

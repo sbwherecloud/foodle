@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <FrameLayout
+            android:id="@+id/tabFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp" >
+
+            <include
+                android:id="@+id/recipeSelectionTabView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                layout="@layout/f_view_votecreation_recipeselection_tab" >
+            </include>
+
+            <include
+                android:id="@+id/contactSelectionTabView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                layout="@layout/f_view_votecreation_contactselection_tab"
+                android:visibility="gone" >
+            </include>
+
+            <include
+                android:id="@+id/voteEndTimeTabView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/f_view_votecreation_voteendtime_tab"
+                android:visibility="gone" >
+            </include>
+        </FrameLayout>
+    </ScrollView>
+    
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:text="@string/create_vote"
+        android:textColor="@color/white"
+        android:background="@drawable/selector_button"
+        android:id="@+id/voteCreationCreateVoteButton" />
+
+</FrameLayout>
